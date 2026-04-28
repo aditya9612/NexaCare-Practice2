@@ -1,0 +1,63 @@
+.wrapper {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #0f172a, #1e1b4b);
+  font-family: Arial;
+}
+
+.card {
+  width: 380px;
+  padding: 30px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  color: white;
+  text-align: center;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+}
+
+.input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  margin-top: 10px;
+}
+
+.otpRow {
+  display: flex;
+  justify-content: space-between;
+  margin: 20px 0;
+}
+
+.otpBox {
+  width: 50px;
+  height: 50px;
+  text-align: center;
+  font-size: 18px;
+  border-radius: 10px;
+  border: none;
+}
+
+.btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  background: #6366f1;
+  color: white;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.btn:hover {
+  background: #4f46e5;
+}
+
+.error {
+  color: #f87171;
+  font-size: 12px;
+  margin-top: 8px;
+}
