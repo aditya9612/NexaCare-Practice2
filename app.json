@@ -1,0 +1,23 @@
+{
+  "expo": {
+    "name": "Cricket App",
+    "slug": "cricket-app",
+    "version": "1.0.0",
+    "sdkVersion": "54.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "newArchEnabled": true,
+    "splash": {
+      "backgroundColor": "#0a1628"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#0a1628"
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    }
+  }
+}
