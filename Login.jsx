@@ -1,83 +1,107 @@
-import React, { useState } from 'react';
-import {
-  View, Text, TextInput, TouchableOpacity, StyleSheet
-} from 'react-native';
+import React, { useState } from "react";
 
-export default function LoginScreen({ navigation }) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Email:", email);
+    console.log("Password:", password);
+  };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Welcome Back</Text>
+    <>
+      <style>{`
+        body {
+          margin: 0;
+          font-family: Arial, sans-serif;
+          background: linear-gradient(to right, #4facfe, #00f2fe);
+        }
 
-      <TextInput
-        placeholder="Email"
-        placeholderTextColor="#999"
-        style={styles.input}
-        value={email}
-        onChangeText={setEmail}
-      />
+        .login-container {
+          height: 100vh;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
 
-      <TextInput
-        placeholder="Password"
-        placeholderTextColor="#999"
-        secureTextEntry
-        style={styles.input}
-        value={password}
-        onChangeText={setPassword}
-      />
+        .login-box {
+          background: #e2edba;
+          padding: 30px;
+          border-radius: 10px;
+          width: 300px;
+          box-shadow: 0px 4px 15px rgba(89, 170, 200, 0.2);
+        }
 
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigation.replace('Home')}
-      >
-        <Text style={styles.buttonText}>Login</Text>
-      </TouchableOpacity>
+        .login-box h2 {
+          text-align: center;
+          margin-bottom: 20px;
+        }
 
-      <Text style={styles.link} onPress={() => navigation.navigate('Register')}>
-        Don’t have an account? Register
-      </Text>
-    </View>
+        .input-group {
+          margin-bottom: 15px;
+        }
+
+        .input-group label {
+          display: block;
+          margin-bottom: 5px;
+        }
+
+        .input-group input {
+          width: 100%;
+          padding: 8px;
+          border-radius: 5px;
+          border: 1px solid rgb(32, 48, 195);
+        }
+
+        button {
+          width: 100%;
+          padding: 10px;
+          background: #bce81c;
+          border: none;
+          color: white;
+          font-size: 16px;
+          border-radius: 5px;
+          cursor: pointer;
+        }
+
+        button:hover {
+          background: #db28c3;
+        }
+      `}</style>
+
+      <div className="login-container">
+        <form className="login-box" onSubmit={handleSubmit}>
+          <h2>Login</h2>
+
+          <div className="input-group">
+            <label>Email</label>
+            <input
+              type="email"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="input-group">
+            <label>Password</label>
+            <input
+              type="password"
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+
+          <button type="submit">Login</button>
+        </form>
+      </div>
+    </>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f2f2f2',
-    justifyContent: 'center',
-    padding: 25,
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 40,
-    color: '#333',
-  },
-  input: {
-    backgroundColor: '#fff',
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 20,
-    borderWidth: 1,
-    borderColor: '#ddd',
-  },
-  button: {
-    backgroundColor: '#4CAF50',
-    padding: 15,
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  link: {
-    textAlign: 'center',
-    marginTop: 20,
-    color: '#4CAF50',
-  },
-});
+export default Login;
