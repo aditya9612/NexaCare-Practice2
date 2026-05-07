@@ -1,68 +1,160 @@
-import React, { useState } from 'react';
-import { Sidebar } from './components/Sidebar.jsx';
-import { Header } from './components/Header.jsx';
-import { DashboardOverview } from './components/DashboardOverview.jsx';
-import { UserManagement } from './components/UserManagement.jsx';
-import { AppointmentScheduling } from './components/AppointmentScheduling.jsx';
-import { PatientRecords } from './components/PatientRecords.jsx';
-import { Icons } from './components/Icons.jsx';
+import { useState } from 'react';
+import { AnimatePresence, motion } from 'motion/react';
+import { 
+  Bell, 
+  Search, 
+  ArrowRight
+} from 'lucide-react';
+import { 
+  NAV_ITEMS, 
+  MOCK_APPOINTMENTS 
+} from './constraints';
+import { Sidebar } from './components/Sidebar';
+import { Dashboard } from './components/Dashboard';
+import { DoctorBooking } from './components/DoctorBooking';
+import { AppointmentsList } from './components/AppointmentsList';
+
+const PlaceholderView = ({ title }) => (
+  <motion.div 
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    className="placeholder-view"
+  >
+    <div className="placeholder-icon-wrapper">
+      <Search size={40} className="placeholder-icon" />
+    </div>
+    <h2 className="placeholder-title">{title}</h2>
+    <p className="placeholder-text">This module is currently being synchronized with the hospital server.</p>
+  </motion.div>
+);
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [appointments, setAppointments] = useState(MOCK_APPOINTMENTS);
+  const [view, setView] = useState('HOME');
+
+  const addAppointment = (newApt) => {
+    setAppointments(prev => [newApt, ...prev]);
+  };
 
   const renderContent = () => {
+    if (view === 'BOOKING' || activeTab === 'doctors') {
+      return (
+        <DoctorBooking 
+          key="booking"
+          onBack={() => {
+            setView('HOME');
+            setActiveTab('dashboard');
+          }} 
+          onAppointmentCreated={addAppointment} 
+        />
+      );
+    }
+
     switch (activeTab) {
       case 'dashboard':
-        return <DashboardOverview />;
-      case 'users':
-        return <UserManagement />;
-      case 'appointments':
-        return <AppointmentScheduling />;
-      case 'patients':
-        return <PatientRecords />;
-      case 'reports':
         return (
-          <div className="flex flex-col items-center justify-center h-[60vh] text-center p-8 bg-white border border-slate-100 rounded-xl shadow-sm animate-in fade-in duration-700">
-            <div className="w-16 h-16 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600 mb-6">
-              <Icons.Activity size={32} />
-            </div>
-            <h2 className="text-2xl font-bold text-slate-800 mb-2">Advanced Analytics</h2>
-            <p className="text-slate-500 max-sm mx-auto mb-8 text-sm leading-relaxed">
-              Our clinical intelligence engine is compiling the quarterly data. 
-              The comprehensive PDF report will be ready for download shortly.
-            </p>
-            <button className="bg-blue-600 text-white px-10 py-3 rounded-lg text-sm font-bold shadow-lg shadow-blue-200 hover:bg-blue-700 transition-all active:scale-95">
-              Request Interim Dossier
-            </button>
-          </div>
+          <Dashboard 
+            key="dashboard"
+            appointments={appointments} 
+            onBookClick={() => setView('BOOKING')} 
+          />
         );
+      case 'appointments':
+        return <AppointmentsList appointments={appointments} />;
+      case 'queue':
+        return <PlaceholderView title="Live Hospital Queue" />;
+      case 'records':
+        return <PlaceholderView title="Medical Records" />;
+      case 'settings':
+        return <PlaceholderView title="Settings & Profile" />;
       default:
-        return <DashboardOverview />;
+        return <Dashboard appointments={appointments} onBookClick={() => setView('BOOKING')} />;
     }
   };
 
   return (
-    <div className="flex min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-blue-100 selection:text-blue-900">
-      <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
-      
-      <main className="flex-1 flex flex-col min-w-0">
-        <Header />
-        
-        <div className="p-8 max-w-[1600px] mx-auto w-full">
-          {renderContent()}
-        </div>
+    <div className="app-container font-sans selection-highlight">
+      {/* Sidebar Navigation */}
+      <Sidebar 
+        activeTab={activeTab} 
+        setActiveTab={(id) => {
+          setActiveTab(id);
+          setView('HOME');
+        }} 
+        setView={setView} 
+      />
 
-        <footer className="mt-auto border-t border-slate-200 bg-white">
-          <div className="max-w-[1600px] mx-auto p-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-semibold text-slate-400">
-            <p>© 2026 Nexacare Healthcare Systems. All clinical data encrypted.</p>
-            <div className="flex gap-6 uppercase tracking-widest">
-              <a href="#" className="hover:text-blue-600 transition-colors">Privacy Policy</a>
-              <a href="#" className="hover:text-blue-600 transition-colors">System Status</a>
-              <a href="#" className="hover:text-blue-600 transition-colors">Support Portal</a>
+      {/* Main Content */}
+      <main className="main-content">
+        {/* Top Header Bar */}
+        <header className="top-header">
+          <h1 className="header-title capitalize">
+            {view === 'BOOKING' ? 'Find Specialist' : activeTab.replace('-', ' ')}
+          </h1>
+          <div className="header-actions md-visible">
+            <div className="search-box">
+              <Search className="search-icon" size={16} />
+              <input 
+                type="text" 
+                placeholder="Search..." 
+                className="search-control"
+              />
             </div>
+            <button className="notification-btn">
+              <Bell size={20} />
+              <span className="dot" />
+            </button>
           </div>
-        </footer>
+        </header>
+
+        <div className="content-wrapper scroll-container">
+          <div className="container-inner">
+            <AnimatePresence mode="wait">
+              {renderContent()}
+            </AnimatePresence>
+          </div>
+        </div>
       </main>
+
+      {/* Floating Notification Box */}
+      <motion.div 
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="floating-box"
+      >
+        <div className="notification-icon">
+          <Bell size={20} color="#0f172a" />
+        </div>
+        <div className="notification-details">
+          <p className="notif-label">Reminder</p>
+          <p className="notif-body">3 Reschedule requests pending review.</p>
+        </div>
+        <div className="notif-action md-visible">
+           <ArrowRight size={16} color="#64748b" />
+        </div>
+      </motion.div>
+
+      {/* Mobile Navigation */}
+      <nav className="mobile-nav">
+        {NAV_ITEMS.slice(0, 4).map(item => {
+          const Icon = item.icon;
+          const isActive = activeTab === item.id;
+          return (
+            <button
+              key={item.id}
+              onClick={() => {
+                setActiveTab(item.id);
+                setView('HOME');
+              }}
+              className={`mobile-item ${isActive ? 'active' : ''}`}
+            >
+              <Icon size={20} />
+              <span>{item.label.split(' ')[0]}</span>
+            </button>
+          )
+        })}
+      </nav>
     </div>
   );
 }
